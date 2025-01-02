@@ -1,7 +1,6 @@
 import { AdvertClass } from '../models'
 import preferences from '@ohos.data.preferences'
 import { USER_SETTING, USER_SETTING_AD } from '../constants'
-import { Context } from '@kit.AbilityKit'
 
 export const defaultAd: AdvertClass = {
   showAd: true,
@@ -18,11 +17,12 @@ export class UserSettingClass{
   }
   async setUserAd(ad:AdvertClass){
     const adStore = await this.getStore()
-    await adStore.put(USER_SETTING_AD, ad)
+    await adStore.put(USER_SETTING_AD, JSON.stringify(ad))
     await adStore.flush()
   }
   async getUserAd():Promise<AdvertClass>{
     const adStore = await this.getStore()
     return  JSON.parse(await adStore.get(USER_SETTING_AD, JSON.stringify(defaultAd)) as string) as AdvertClass
   }
+
 }
