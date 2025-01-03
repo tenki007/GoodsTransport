@@ -1,11 +1,12 @@
-import { LoginFormModel } from 'basic'
+import { LoginFormModel, login, UserSettingClass} from 'basic'
+import { promptAction, router } from '@kit.ArkUI'
 
 @Entry
 @Component
 struct Login {
 
   @State UserFrom:LoginFormModel =new LoginFormModel({
-    username: 'xbsj001',
+    account: 'xbsj001',
     password: '123456'
   })
   @State showLoading:boolean = false
@@ -41,11 +42,11 @@ struct Login {
         .margin({top:'50',bottom:'50'})
 
 
-        TextInput({placeholder:'请输入账号',text:this.UserFrom.username}).align(Alignment.Center)
+        TextInput({placeholder:'请输入账号',text:this.UserFrom.account}).align(Alignment.Center)
           .fontSize('18')
           .loginStyle()
           .onChange((value:string)=>{
-            this.UserFrom.username = value
+            this.UserFrom.account = value
           })
         TextInput({placeholder:'请输入密码',text:this.UserFrom.password}).align(Alignment.Center)
           .fontSize('18')
@@ -55,6 +56,11 @@ struct Login {
           .loginStyle()
           .onChange((value:string)=>{
             this.UserFrom.password = value
+          })
+          .onSubmit(()=>{
+            if(this.isInput()){
+              this.login()
+            }
           })
           Button({ type: ButtonType.Capsule })
         {
@@ -71,6 +77,9 @@ struct Login {
           .height(50)
           .margin({ top: 50 })
         .enabled(this.isInput())
+        .onClick(()=>{
+          this.login()
+        })
       }
       .padding({ left: 32, right: 32 })
       .margin({ top: 40 })
@@ -80,9 +89,28 @@ struct Login {
   }
 
   isInput(){
-    if (this.UserFrom.username && this.UserFrom.password) {
+    if (this.UserFrom.account && this.UserFrom.password) {
       return true
     }
     return false
   }
+
+  async login(){
+    try {
+      this.showLoading = true
+      const token = await login(this.UserFrom)
+      AppStorage.setOrCreate('token', token)
+      new UserSettingClass(getContext(this)).setUserToken(token)
+      router.replaceUrl({
+        url: 'pages/Index/Index' // 跳转到登录页
+      })
+      promptAction.showToast({ message: '登录成功' })
+      this.showLoading = false
+    }catch (e){
+      console.log(e)
+    } finally {
+      this.showLoading = false
+    }
+  }
+
 }

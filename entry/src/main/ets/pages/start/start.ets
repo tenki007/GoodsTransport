@@ -13,7 +13,7 @@ struct Start {
     adTime: 0
   }
   timer: number = -1//定时器的id,方便我们清空定时器
-
+  isclose: boolean = false
   async aboutToAppear(): Promise<void> {
     this.adObj = await this.userSetting.getUserAd()
 
@@ -21,7 +21,9 @@ struct Start {
       if(this.adObj.adTime === 0) {
         clearInterval(this.timer)
         //关闭窗口
-        this.closeWin()
+        if (!this.isclose) {
+          this.closeWin()
+        }
         return
       }
       this.adObj.adTime--
@@ -29,6 +31,7 @@ struct Start {
   }
 
   closeWin () {
+    this.isclose = true
     window.findWindow("ad_window").destroyWindow()
   }
 
@@ -38,14 +41,17 @@ struct Start {
       Image(this.adObj.adImg).objectFit(ImageFit.Cover)
       Text(`${this.adObj.adTime}秒后跳过`)
         .padding({ left: 10, right: 10 })
-        .margin({ right: 20, top: 20 })
+        .margin({ right: 20, top: 40 })
         .height(30)
         .fontSize(14)
         .borderRadius(15)
         .backgroundColor($r("app.color.background_page"))
         .textAlign(TextAlign.Center)
         .onClick(() => {
-          this.closeWin()
+          if (!this.isclose) {
+            this.closeWin()
+          }
+
         })
 
     }.height('100%').width('100%')

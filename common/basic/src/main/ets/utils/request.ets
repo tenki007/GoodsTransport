@@ -19,6 +19,9 @@ async function requestHttp<T>(url: string = "", method: http.RequestMethod = htt
     if (data && Object.keys(data).length) {
       urlStr += "?" +
       Object.keys(data).map(key => {
+        if(key==="username"){
+          return `account=${data[key]}`
+        }
         return `${key}=${data[key]}`
       }).join("&")
     }
