@@ -1,7 +1,14 @@
+import { LoginFormModel } from 'basic'
+
 @Entry
 @Component
 struct Login {
 
+  @State UserFrom:LoginFormModel =new LoginFormModel({
+    username: 'xbsj001',
+    password: '123456'
+  })
+  @State showLoading:boolean = false
   @Styles
   loginStyle() {
     .backgroundColor('#fff')
@@ -12,7 +19,7 @@ struct Login {
     .height(58)
     .borderRadius(0)
   }
-  @State showLoading:boolean = false
+
   build() {
     Column() {
       Column(){
@@ -34,15 +41,21 @@ struct Login {
         .margin({top:'50',bottom:'50'})
 
 
-        TextInput({placeholder:'请输入账号'}).align(Alignment.Center)
+        TextInput({placeholder:'请输入账号',text:this.UserFrom.username}).align(Alignment.Center)
           .fontSize('18')
           .loginStyle()
-        TextInput({placeholder:'请输入密码'}).align(Alignment.Center)
+          .onChange((value:string)=>{
+            this.UserFrom.username = value
+          })
+        TextInput({placeholder:'请输入密码',text:this.UserFrom.password}).align(Alignment.Center)
           .fontSize('18')
           .margin({top:'20'})
           .type(InputType.Password)
           .showPasswordIcon(true)
           .loginStyle()
+          .onChange((value:string)=>{
+            this.UserFrom.password = value
+          })
           Button({ type: ButtonType.Capsule })
         {
           Row() {
@@ -57,11 +70,19 @@ struct Login {
         .width('100%')
           .height(50)
           .margin({ top: 50 })
+        .enabled(this.isInput())
       }
       .padding({ left: 32, right: 32 })
       .margin({ top: 40 })
     }
     .height('100%')
     .width('100%')
+  }
+
+  isInput(){
+    if (this.UserFrom.username && this.UserFrom.password) {
+      return true
+    }
+    return false
   }
 }
