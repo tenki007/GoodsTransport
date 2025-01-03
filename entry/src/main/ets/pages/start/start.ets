@@ -45,9 +45,7 @@ struct Start {
         .backgroundColor($r("app.color.background_page"))
         .textAlign(TextAlign.Center)
         .onClick(() => {
-          //  做个判定
           this.closeWin()
-
         })
 
     }.height('100%').width('100%')

@@ -33,14 +33,19 @@ export default class EntryAbility extends UIAbility {
       win.setUIContent("pages/start/start")
     }
 
+    const token = await setting.getUserToken()
+    if(token){
+      windowStage.loadContent('pages/Index', (err) => {
+        if (err.code) {
+          hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
+          return;
+        }
+        hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
+      });
+    }else {
+      windowStage.loadContent('pages/Login/Login')
+    }
 
-    windowStage.loadContent('pages/Index', (err) => {
-      if (err.code) {
-        hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
-        return;
-      }
-      hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
-    });
   }
 
   onWindowStageDestroy(): void {
