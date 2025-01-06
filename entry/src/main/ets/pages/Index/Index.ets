@@ -1,9 +1,16 @@
 import { TabClass } from 'basic';
+import Mine from '../tabs/Mine/Mine';
 
 @Entry
 @Component
 struct Index {
-  @State currentIndex: number = 0
+
+  @State @Watch("updateName") currentIndex: number = 0 // 当前激活项
+  @Provide currentName: string = ""
+  updateName () {
+    this.currentName =
+      this.tabsData[this.currentIndex].name
+  }
   @State tabsData: TabClass[] = [{
     title: '任务',
     name: 'task',
@@ -52,7 +59,7 @@ struct Index {
             Text("消息组件")
           }
           else {
-            Text("我的组件")
+            Mine()
           }
         }.tabBar(this.getTabBar(item))
       })

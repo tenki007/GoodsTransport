@@ -1,4 +1,4 @@
-import { LoginFormModel, login, UserSettingClass} from 'basic'
+import { LoginFormModel, login, UserSettingClass, TOKEN_KEY} from 'basic'
 import { promptAction, router } from '@kit.ArkUI'
 
 @Entry
@@ -99,7 +99,7 @@ struct Login {
     try {
       this.showLoading = true
       const token = await login(this.UserFrom)
-      AppStorage.setOrCreate('token', token)
+      AppStorage.setOrCreate(TOKEN_KEY, token)
       new UserSettingClass(getContext(this)).setUserToken(token)
       router.replaceUrl({
         url: 'pages/Index/Index' // 跳转到登录页
