@@ -15,13 +15,11 @@ async function requestHttp<T>(url: string = "", method: http.RequestMethod = htt
   // 官方文档上写的是ok的，但是运行有问题，虽然说了如果get类型会进行拼接地址，但是实际并没有
   // get/post区别是什么
   if (method === http.RequestMethod.GET) {
+
     // data参数都拼接到地址上  ?a=1&b=2&c=3
     if (data && Object.keys(data).length) {
       urlStr += "?" +
-      Object.keys(data).map(key => {
-        if(key==="username"){
-          return `account=${data[key]}`
-        }
+      Object.keys(data).filter(key=>!!data[key]).map(key => {
         return `${key}=${data[key]}`
       }).join("&")
     }

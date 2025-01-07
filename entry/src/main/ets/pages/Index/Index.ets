@@ -1,5 +1,6 @@
 import { TabClass } from 'basic';
 import Mine from '../tabs/Mine/Mine';
+import TaskTabs from '../tabs/Task/TaskTabs';
 
 @Entry
 @Component
@@ -52,7 +53,7 @@ struct Index {
         TabClass) => {
         TabContent(){
           if(item.name === 'task') {
-            Text("任务组件")
+            TaskTabs()
           }
           else if(item.name === 'message')
           {
