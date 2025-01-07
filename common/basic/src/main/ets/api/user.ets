@@ -1,5 +1,5 @@
 import { Request }from '../utils'
-import { LoginFormModel} from '../models'
+import { LoginFormModel, UserTaskInfoModel, UserTaskInfoParamsModel} from '../models'
 import {  UserInfoModel } from '../models'
 
 
@@ -12,4 +12,8 @@ export const getUserInfo = () => {
 export const login = (data: LoginFormModel) => {
   return Request.post<string>
   ("/driver/login/account", data)
+}
+
+export const getUserTaskInfo= (data:UserTaskInfoParamsModel) =>{
+  return Request.get<UserTaskInfoModel>('/driver/users/taskReport',data)
 }

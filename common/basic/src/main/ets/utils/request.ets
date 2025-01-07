@@ -70,8 +70,7 @@ async function requestHttp<T>(url: string = "", method: http.RequestMethod = htt
       return res.data as T
     } else {
       // 业务错了
-      promptAction.showToast({ message:
-      "服务器异常" }) //  res.msg没处理好 有可能出来一堆服务器语言
+      promptAction.showToast({ message: "服务器异常" }) //  res.msg没处理好 有可能出来一堆服务器语言
       return Promise.reject(new
       Error(res.msg)) // 业务错误 请求终止
     }

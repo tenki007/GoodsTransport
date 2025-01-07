@@ -27,13 +27,11 @@ export interface UserInfo {
     name: string = ''
     number: string = ''
     phone: string = ''
-  constructor(model?: UserInfo) {
-    if (model) {
+  constructor(model: UserInfo) {
       this.avatar = model.avatar
       this.name = model.name
       this.number = model.number
       this.phone = model.phone
-    }
   };
     // constructor(model: UserInfo) {
     //     this.avatar = model.avatar

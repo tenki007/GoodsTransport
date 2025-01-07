@@ -1,18 +1,29 @@
-import { getUserInfo, UserInfoModel } from "basic"
+import { getUserInfo, UserInfoModel,HmCard,HmCardItem, UserTaskInfoModel, UserTaskInfo,
+  UserTaskInfoParams,
+  UserTaskInfoParamsModel,
+  getUserTaskInfo,
+  UserInfo} from "basic"
+import { router } from "@kit.ArkUI"
 
 @Preview
 @Component
 struct Mine {
 
+  @State userTaskInfo:UserTaskInfoModel = new UserTaskInfoModel({} as UserTaskInfo)
+  queryTaskParams:UserTaskInfoParamsModel = new UserTaskInfoParamsModel({year:new Date().getFullYear().toString(),
+    month: (new Date().getMonth()+1).toString()} as UserTaskInfoParams)
+
   @Consume @Watch("getUserInfo") currentName:string
-  @State userInfo:UserInfoModel = new UserInfoModel()
+  @State userInfo:UserInfoModel = new UserInfoModel({} as UserInfo)
   async getUserInfo() {
     if(this.currentName=="mine") {
       this.userInfo = await getUserInfo()
+      this.userTaskInfo = await getUserTaskInfo(this.queryTaskParams)
     }
   }
-
-
+  // async getUserTaskInfo() {
+  //   this.userTaskInfo = await getUserTaskInfo(this.queryTaskParams)
+  // }
 
 
   build() {
@@ -46,12 +57,12 @@ struct Mine {
         Text("- 本月任务").fontSize(14).fontColor($r('app.color.text_secondary')).lineHeight(20)
         Row() {
           Column() {
-            Text("1000").fontSize(18).fontColor($r('app.color.text_primary')).lineHeight(25)
+            Text(this.userTaskInfo.taskAmounts?.toString()).fontSize(18).fontColor($r('app.color.text_primary')).lineHeight(25)
               .margin({ bottom: 17 })
             Text("任务总量").fontSize(12).fontColor($r('app.color.text_primary')).lineHeight(17)
           }.justifyContent(FlexAlign.SpaceAround).layoutWeight(1)
           Column() {
-            Text("1000")
+            Text(this.userTaskInfo.completedAmounts?.toString())
               .fontSize(18)
 
               .fontColor($r('app.color.text_primary'))
@@ -61,7 +72,7 @@ struct Mine {
 
           }.justifyContent(FlexAlign.SpaceAround).layoutWeight(1)
           Column() {
-            Text("1000")
+            Text(this.userTaskInfo.transportMileage?.toString())
               .fontSize(18)
               .fontColor($r('app.color.text_primary'))
               .lineHeight(25)
@@ -78,44 +89,33 @@ struct Mine {
       .padding({ top: 13.5, bottom: 13.5 })
       .justifyContent(FlexAlign.SpaceBetween)
 
-      Column(){
-          Row(){
-            Text('车辆信息').fontSize(16)
-              .fontWeight(600)
-            Image($r('app.media.ic_btn_more')).size({width:24,height:24})
-          }.justifyContent(FlexAlign.SpaceBetween)
-          .border({width:{bottom:1},color:$r('app.color.background_page')})
-        .width('100%')
-        .height(60)
-        Row(){
-          Text('任务数据').fontSize(16)
-            .fontWeight(600)
-          Image($r('app.media.ic_btn_more')).size({width:24,height:24})
-        }.justifyContent(FlexAlign.SpaceBetween)
-        .border({width:{bottom:1},color:$r('app.color.background_page')})
-        .width('100%')
-        .height(60)
-        Row(){
-          Text('系统设置').fontSize(16)
-            .fontWeight(600)
-          Image($r('app.media.ic_btn_more')).size({width:24,height:24})
-        }.justifyContent(FlexAlign.SpaceBetween)
-        .border({width:{bottom:1},color:$r('app.color.background_page')})
-        .width('100%')
-        .height(60)
-      }.backgroundColor($r('app.color.white'))
-      .borderRadius(8)
-      .padding({
-        left:15,
-        right:15
-      })
-      .margin({
-        left:14.5,right:14.5
-      })
+      Column() {
+
+        HmCard() {
+          HmCardItem({
+            leftTitle: '车辆信息',
+            rightText: ''
+          })
+          HmCardItem({
+            leftTitle: '任务设置',
+            rightText: ''
+          })
+          HmCardItem({
+            leftTitle: '系统设置',
+            rightText: '',
+            showBottomBorder: false,
+            onRightClick: () => {
+              router.pushUrl({ url:
+              'pages/Setting/Setting' })
+            }
+          })
+        }
+      }
     }
     .height('100%')
     .width('100%')
     .backgroundColor($r('app.color.background_page'))
+
   }
 }
 

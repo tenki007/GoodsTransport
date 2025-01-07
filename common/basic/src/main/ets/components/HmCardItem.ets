@@ -24,8 +24,7 @@ struct HmCardItem {
     })
     .border({
       width: {
-        bottom: this.showBottomBorder ? 1 :
-          0
+        bottom: this.showBottomBorder ? 1 : 0
       },
       color:
       $r('app.color.background_divider')
