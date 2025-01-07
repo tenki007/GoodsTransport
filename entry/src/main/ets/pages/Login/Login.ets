@@ -72,7 +72,7 @@ struct Login {
             Text('登录').fontColor($r('app.color.white'))
           }
         }
-        .backgroundColor($r('app.color.primary_disabled'))
+        .backgroundColor(this.isInput()?$r('app.color.primary'):$r('app.color.primary_disabled'))
         .width('100%')
           .height(50)
           .margin({ top: 50 })
