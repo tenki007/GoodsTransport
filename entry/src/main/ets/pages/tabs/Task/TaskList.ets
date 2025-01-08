@@ -1,4 +1,7 @@
-import { getTaskList, TaskInfoItem, TaskListParams, TaskListParamsModel, TaskTypeEnum } from "basic"
+import { getTaskList,
+  HmList,
+  TaskInfoItem, TaskInfoItemModel, TaskListParams, TaskListParamsModel, TaskTypeEnum } from "basic"
+import TaskItemCard from "./components/TaskItemCard"
 
 @Preview
 @Component
@@ -9,13 +12,30 @@ struct TaskList {
     pageSize: 5,
   } as TaskListParams)
   @State taskListData: TaskInfoItem[] = []
+  @State allPage:number = 1
   aboutToAppear() {
-    // this.getTaskList()
+    this.getTaskList(true)
   }
-  async getTaskList() {
+  async getTaskList(isRefresh:boolean) {
     const result = await getTaskList(this.queryParams)
-    this.taskListData = result.items
+    if (isRefresh) {
+      this.taskListData=result.items
+    } else {
+      this.taskListData.push(...result.items)
+    }
+
+    this.allPage=result.pages
+    this.queryParams.page++
   }
+
+  @Builder renderItem (item: object) {
+    TaskItemCard({ TaskData: item as TaskInfoItemModel })
+  }
+  async onRefresh(){
+    this.queryParams.page=1;
+    await this.getTaskList(true)
+  }
+
   build() {
     if (this.taskListData.length===0){
       Column(){
@@ -24,14 +44,35 @@ struct TaskList {
       }.justifyContent(FlexAlign.Center)
       .backgroundColor($r('app.color.background_page'))
     }else {
-      Column(){
-
-      }
+      // List () {
+      //   ForEach(this.taskListData, (item: TaskInfoItemModel) => {
+      //     ListItem(){
+      //       TaskItemCard({ TaskData: item })
+      //     }
+      //   })
+      // }
+      HmList({
+        dataSource: this.taskListData, // 数据源
+        finished: this.allPage <
+        this.queryParams.page  ,// 是否还有下一页
+        // 上拉加载的函数
+        onLoad: async () => {
+          // 上拉加载
+          await this.getTaskList(false)
+        },
+        renderItem: (item: object) => {
+          // 如果需要的是builderParams的参数 可以用普通函数包裹一个Builder的函数
+          this.renderItem(item)
+        },
+        loadingText: '拼命加载中',
+        finishText: '已经到底啦',
+        onRefresh:async ()=>{
+          this.onRefresh()
+        }
+      })
     }
+    }
+
     // Text(JSON.stringify(this.taskListData))
-
-
   }
-
-}
 export default  TaskList

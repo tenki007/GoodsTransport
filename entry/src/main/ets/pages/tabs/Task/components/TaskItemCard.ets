@@ -1,13 +1,13 @@
-import { TaskInfoItem } from 'basic'
+import { TaskInfoItem, TaskInfoItemModel } from 'basic'
 
 @Preview
 @Component
 struct TaskItemCard {
-  @Prop TaskData:TaskInfoItem
+  TaskData:TaskInfoItemModel = {} as TaskInfoItem
   build() {
   Column(){
     Row(){
-      Text('任务编号：').fontSize(16)
+      Text('任务编号：'+this.TaskData.transportTaskId).fontSize(16)
         .fontWeight(500).lineHeight(22)
         .fontColor($r('app.color.text_primary'))
 
@@ -20,7 +20,7 @@ struct TaskItemCard {
         .height(22)
         .borderRadius(11)
         .textAlign(TextAlign.Center)
-      Text("1")
+      Text(this.TaskData.startAddress)
         .margin({ left: 11.5 })
         .fontColor($r('app.color.text_secondary'))
         .fontSize(14)
@@ -34,7 +34,7 @@ struct TaskItemCard {
         .height(22)
         .borderRadius(11)
         .textAlign(TextAlign.Center)
-      Text("2")
+      Text(this.TaskData.endAddress)
         .margin({ left: 11.5 })
         .fontColor($r('app.color.text_secondary'))
         .fontSize(14)
@@ -49,11 +49,11 @@ struct TaskItemCard {
     Row() {
       Column() {
         Text('提货时间').fontSize(14).fontColor($r('app.color.text_secondary'))
-        Text("21").fontSize(14).fontColor($r('app.color.text_secondary')).margin({ top: 4 })
+        Text(this.TaskData.planDepartureTime).fontSize(14).fontColor($r('app.color.text_secondary')).margin({ top: 4 })
       }.alignItems(HorizontalAlign.Start)
       Button("提货", { type:
       ButtonType.Capsule })
-        .backgroundColor($r('app.color.primary'))
+        .backgroundColor($r(this.TaskData.enablePickUp?'app.color.primary':'app.color.primary_disabled'))
         .fontColor($r("app.color.white"))
         .fontSize(14)
         .height(32)
