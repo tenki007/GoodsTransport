@@ -1,1 +1,6 @@
-export const BASE_URL = '1.94.234.24:9090'
+// export const BASE_URL = 'http://49.235.144.72:5260'
+// export const BASE_URL = 'http://113.45.166.231:8088'
+// export const BASE_URL = 'http://10.0.2.2'
+export const BASE_URL = 'http://1.94.234.24:9090'
+// export const BASE_URL = 'http://113.45.166.231:8088'
+// export const BASE_URL = 'http://124.222.56.109:9090'

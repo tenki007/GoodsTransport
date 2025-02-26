@@ -1,6 +1,20 @@
 {
   "app": {
-    "signingConfigs": [],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "storePassword": "000000193001AE16E9DFDAE411DB83E69C67C90FBCB3F607BEAEEDA77E1B42475AB4FB8F6881C2511A",
+          "certpath": "E:/Keys/HdbTest.cer",
+          "keyAlias": "test",
+          "keyPassword": "0000001950B0D66C02DB5AF351CA00130ACA99961C572CAF8944C2C6683AC56422771CA70E8E6EB7DE",
+          "profile": "E:/Keys/tuisongDebug.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "E:/Keys/hdbtest.p12"
+        }
+      }
+    ],
     "products": [
       {
         "name": "default",

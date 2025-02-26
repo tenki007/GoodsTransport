@@ -19,8 +19,10 @@ struct TaskList {
   async getTaskList(isRefresh:boolean) {
     const result = await getTaskList(this.queryParams)
     if (isRefresh) {
+      console.log("init")
       this.taskListData=result.items
     } else {
+      console.log("ref")
       this.taskListData.push(...result.items)
     }
 
@@ -37,7 +39,7 @@ struct TaskList {
   }
 
   build() {
-    if (this.taskListData.length===0){
+    if (this.taskListData?.length===0){
       Column(){
         Image($r('app.media.ic_not_found')).size({width:140,height:140})
         Text('无待提取货物').fontColor($r('app.color.text_secondary')).fontSize(16)
@@ -52,24 +54,38 @@ struct TaskList {
       //   })
       // }
       HmList({
-        dataSource: this.taskListData, // 数据源
-        finished: this.allPage <
-        this.queryParams.page  ,// 是否还有下一页
-        // 上拉加载的函数
         onLoad: async () => {
-          // 上拉加载
           await this.getTaskList(false)
         },
-        renderItem: (item: object) => {
-          // 如果需要的是builderParams的参数 可以用普通函数包裹一个Builder的函数
-          this.renderItem(item)
+        onRefresh: async () => {
+          await this.onRefresh()
         },
-        loadingText: '拼命加载中',
-        finishText: '已经到底啦',
-        onRefresh:async ()=>{
-          this.onRefresh()
-        }
-      })
+        dataSource: this.taskListData,
+        renderItem: this.renderItem,
+        finished: this.allPage < this.queryParams.page,
+        finishText: '没啦没啦',
+        loadingText: '拼命加载中'
+      }).height('100%')
+
+      // HmList({
+      //   dataSource: this.taskListData, // 数据源
+      //   finished: this.allPage <
+      //   this.queryParams.page  ,// 是否还有下一页
+      //   // 上拉加载的函数
+      //   onLoad: async () => {
+      //     // 上拉加载
+      //     await this.getTaskList(false)
+      //   },
+      //   renderItem: (item: object) => {
+      //     // 如果需要的是builderParams的参数 可以用普通函数包裹一个Builder的函数
+      //     this.renderItem(item)
+      //   },
+      //   loadingText: '拼命加载中',
+      //   finishText: '已经到底啦',
+      //   onRefresh:async ()=>{
+      //     this.onRefresh()
+      //   }
+      // })
     }
     }
 
