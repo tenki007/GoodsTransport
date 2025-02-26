@@ -82,6 +82,7 @@ struct HmList {
           this.getBottomDisplay()
         }
       }
+      .height('100%')
       .onReachEnd(async () => {
         // 实现上拉加载
         // 需要一个标记 是否已经加载完所有数据

@@ -6,8 +6,8 @@ import { promptAction, router } from '@kit.ArkUI'
 struct Login {
 
   @State UserFrom:LoginFormModel =new LoginFormModel({
-    account: 'xbsj001',
-    password: '123456'
+    account: 'username',//'hashtenki',
+    password: 'password'//'tenki4687'
   })
   @State showLoading:boolean = false
   @Styles

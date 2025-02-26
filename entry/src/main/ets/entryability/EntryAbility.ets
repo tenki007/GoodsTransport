@@ -2,12 +2,59 @@ import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { AdvertClass, defaultAd, TOKEN_KEY, UserSettingClass } from 'basic';
+import abilityAccessCtrl from '@ohos.abilityAccessCtrl'
+import { BusinessError } from '@kit.BasicServicesKit';
+import { pushService } from '@kit.PushKit';
+import { notificationManager } from '@kit.NotificationKit';
+import { common } from '@kit.AbilityKit';
+
+const TAG: string = '[PublishOperation]';
+const DOMAIN_NUMBER: number = 0xFF00;
+
 
 export default class EntryAbility extends UIAbility {
-  onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
-  }
+  // onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+  //   hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
+  // }
+  async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): Promise<void> {
+    //获取pushtoken
+    try {
+      const pushToken: string = await pushService.getToken();
+      console.log('pushToken: ' + pushToken)
+      hilog.info(0x0000, 'testTag', 'Succeeded in getting push token');
+    } catch (err) {
+      let e: BusinessError = err as BusinessError;
+      hilog.error(0x0000, 'testTag', 'Failed to get push token: %{public}d %{public}s', e.code, e.message);
+    }
 
+
+    let context = getContext(this) as common.UIAbilityContext;
+    notificationManager.isNotificationEnabled().then((data: boolean) => {
+      hilog.info(DOMAIN_NUMBER, TAG, "isNotificationEnabled success, data: " + JSON.stringify(data));
+      if(!data){
+        notificationManager.requestEnableNotification(context).then(() => {
+          hilog.info(DOMAIN_NUMBER, TAG, `[ANS] requestEnableNotification success`);
+        }).catch((err : BusinessError) => {
+          if(1600004 == err.code){
+            hilog.error(DOMAIN_NUMBER, TAG, `[ANS] requestEnableNotification refused, code is ${err.code}, message is ${err.message}`);
+          } else {
+            hilog.error(DOMAIN_NUMBER, TAG, `[ANS] requestEnableNotification failed, code is ${err.code}, message is ${err.message}`);
+          }
+        });
+      }
+    }).catch((err : BusinessError) => {
+      hilog.error(DOMAIN_NUMBER, TAG, `isNotificationEnabled fail, code is ${err.code}, message is ${err.message}`);
+    });
+
+
+    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
+    let manger = abilityAccessCtrl.createAtManager()
+    await manger.requestPermissionsFromUser(this.context,
+      [
+        'ohos.permission.LOCATION',
+        'ohos.permission.APPROXIMATELY_LOCATION',
+      ])
+  }
   onDestroy(): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onDestroy');
   }

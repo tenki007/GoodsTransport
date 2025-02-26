@@ -1,4 +1,5 @@
-import { TaskInfoItem, TaskInfoItemModel } from 'basic'
+import { TaskInfoItem, TaskInfoItemModel, TaskTypeEnum } from 'basic'
+import { router } from '@kit.ArkUI'
 
 @Preview
 @Component
@@ -51,17 +52,61 @@ struct TaskItemCard {
         Text('提货时间').fontSize(14).fontColor($r('app.color.text_secondary'))
         Text(this.TaskData.planDepartureTime).fontSize(14).fontColor($r('app.color.text_secondary')).margin({ top: 4 })
       }.alignItems(HorizontalAlign.Start)
-      Button("提货", { type:
-      ButtonType.Capsule })
-        .backgroundColor($r(this.TaskData.enablePickUp?'app.color.primary':'app.color.primary_disabled'))
+      Button(this.getBtnText(), { type: ButtonType.Capsule })
+        .backgroundColor(this.getBtnEnable() ? $r('app.color.primary') : $r('app.color.primary_disabled'))
         .fontColor($r("app.color.white"))
         .fontSize(14)
         .height(32)
+        .enabled(this.getBtnEnable())
+        .onClick(() => {
+          this.toPickUp()
+        })
     }.justifyContent(FlexAlign.SpaceBetween).width('100%')
   }.margin({ left: 15, right: 15, top: 15 })
   .padding({ left: 19.5, right: 19.5, bottom: 18.5, top: 18.5 })
   .borderRadius(10)
-  .backgroundColor($r('app.color.white'))}
+  .backgroundColor($r('app.color.white'))
+  }
+  toPickUp () {
+    if(this.getBtnEnable()) {
+      router.pushUrl({
+        url:"pages/TaskDetail/TaskDetail",
+        params: {
+          id: this.TaskData.id
+        }
+      })
+    }
+  }
+  /** 获取按钮可用性 */
+  getBtnEnable() {
+    const value = this.TaskData.status.toString()
+    if (this.TaskData.enablePickUp) {
+      return true
+    }
+    switch (value) {
+      case TaskTypeEnum.Line.toString():
+      case TaskTypeEnum.Delivered.toString():
+        return true
+      default:
+        return false
+    }
+  }
+
+  /** 获取按钮显示文本 */
+  getBtnText() {
+    const value = this.TaskData.status.toString()
+    switch (value) {
+      case TaskTypeEnum.Waiting.toString():
+        return "提货"
+      case TaskTypeEnum.Line.toString():
+        return "交货"
+      case TaskTypeEnum.Delivered.toString():
+        return "回车登记"
+      default:
+        return "查看"
+    }
+  }
+
 }
 
 
